@@ -2,6 +2,7 @@
   "name": "portfolio-cms",
   "version": "1.0.0",
   "description": "Portfolio CMS frontend connected to Supabase via Vercel",
+  "type": "module",
   "scripts": {
     "start": "echo \"This is a Vercel serverless project. Use 'vercel dev' instead.\""
   },
