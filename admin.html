@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Portfolio CMS — Admin Panel</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0f17;
+      --bg2: #111827;
+      --card: #161e2e;
+      --border: #1f2d45;
+      --text: #e2eaf6;
+      --text2: #8899bb;
+      --accent: #4f8ef7;
+      --accent2: #22d3ee;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo span {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #4f8ef7, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: var(--text2);
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: rgba(79, 142, 247, 0.06);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(79, 142, 247, 0.1);
+      border-left-color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-section {
+      padding: 16px 20px 6px;
+      font-size: 10px;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.15em;
+      color: var(--border);
+      text-transform: uppercase;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 18px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* FORM ELEMENTS */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text2);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      background: #0d1525;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #3b7de8;
+      box-shadow: 0 4px 20px rgba(79, 142, 247, 0.35);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
+
+    /* SAVE INDICATOR */
+    .save-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .save-badge.saved {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .save-badge.unsaved {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--yellow);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    /* LIST ITEMS (skills, projects, etc.) */
+    .list-item {
+      background: #0d1525;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .list-item:hover {
+      border-color: rgba(79, 142, 247, 0.3);
+    }
+
+    /* TABS */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding: 10px 18px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text2);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+      font-weight: 500;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* PANEL */
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    /* SWITCH */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #1f2d45;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: var(--text2);
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked+.slider {
+      background: var(--accent);
+    }
+
+    input:checked+.slider::before {
+      transform: translateX(20px);
+      background: #fff;
+    }
+
+    /* STATS */
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 1px;
+    }
+
+    /* RANGE */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    /* PREVIEW LINK */
+    .preview-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 8px;
+      color: var(--accent2);
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .preview-btn:hover {
+      background: rgba(34, 211, 238, 0.18);
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.4s;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* LOGIN */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 380px;
+      text-align: center;
+    }
+
+    /* COLOR PICKER */
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch.active {
+      border-color: var(--accent);
+    }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media(max-width:900px) {
+      .main {
+        margin-left: 0;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;">Admin Panel</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:28px;">Portfolio CMS — Enter your password</div>
+      <div class="form-group" style="text-align:left;">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-pass" class="form-input" placeholder="Enter admin password"
+          onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <button class="btn btn-primary w-full" style="width:100%;justify-content:center;" onclick="doLogin()">Login
+        →</button>
+      <div id="login-err" style="color:var(--red);font-size:12px;margin-top:10px;display:none;">Incorrect password. Try again
+        <strong></strong>
+      </div>
+      <div style="font-size:11px;color:var(--border);margin-top:16px;font-family:'Space Mono',monospace;"></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text2);margin-bottom:4px;">PORTFOLIO CMS
+      </div>
+      <span>Admin Panel</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 0;">
+      <div class="nav-section">Dashboard</div>
+      <div class="nav-item active" onclick="showPanel('dashboard',this)"><span class="nav-icon">📊</span>Overview</div>
+
+      <div class="nav-section">Content</div>
+      <div class="nav-item" onclick="showPanel('hero',this)"><span class="nav-icon">🏠</span>Hero Section</div>
+      <div class="nav-item" onclick="showPanel('about',this)"><span class="nav-icon">👤</span>About Me</div>
+      <div class="nav-item" onclick="showPanel('skills',this)"><span class="nav-icon">⚡</span>Skills</div>
+      <div class="nav-item" onclick="showPanel('projects',this)"><span class="nav-icon">💻</span>Projects</div>
+      <div class="nav-item" onclick="showPanel('resume',this)"><span class="nav-icon">📄</span>Resume</div>
+      <div class="nav-item" onclick="showPanel('achievements',this)"><span class="nav-icon">🏆</span>Achievements</div>
+      <div class="nav-item" onclick="showPanel('contact',this)"><span class="nav-icon">📬</span>Contact</div>
+
+      <div class="nav-section">Settings</div>
+      <div class="nav-item" onclick="showPanel('appearance',this)"><span class="nav-icon">🎨</span>Appearance</div>
+      <div class="nav-item" onclick="showPanel('settings',this)"><span class="nav-icon">⚙️</span>Settings</div>
+    </div>
+    <div style="padding:16px 20px;border-top:1px solid var(--border);">
+      <a href="portfolio.html" target="_blank" class="preview-btn" style="width:100%;justify-content:center;">👁 Preview
+        Portfolio</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="toggleSidebar()"
+          style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;">☰</button>
+        <div class="topbar-title" id="topbar-title">Overview</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="save-indicator" class="save-badge saved">● Saved</div>
+        <button class="btn btn-success btn-sm" onclick="saveAll()">💾 Save & Publish</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ DASHBOARD PANEL ═══ -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="grid-3" style="margin-bottom:24px;">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(79,142,247,0.12);">💻</div>
+            <div>
+              <div class="stat-num" id="stat-projects">6</div>
+              <div class="stat-label">Projects</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(16,185,129,0.12);">⚡</div>
+            <div>
+              <div class="stat-num" id="stat-skills">15</div>
+              <div class="stat-label">Skills</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,158,11,0.12);">🏆</div>
+            <div>
+              <div class="stat-num" id="stat-achievements">6</div>
+              <div class="stat-label">Achievements</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🚀 Quick Start Guide</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text2);">
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span
+                style="color:var(--accent);font-weight:700;min-width:20px;">1.</span> Use the left sidebar to navigate
+              to each section (Hero, About, Skills, etc.)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span
+                style="color:var(--accent);font-weight:700;min-width:20px;">2.</span> Edit any field — changes are
+              automatically tracked</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span
+                style="color:var(--accent);font-weight:700;min-width:20px;">3.</span> Click <strong
+                style="color:var(--green);">Save & Publish</strong> in the top bar to apply all changes</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span
+                style="color:var(--accent);font-weight:700;min-width:20px;">4.</span> Click <strong
+                style="color:var(--accent2);">Preview Portfolio</strong> at the bottom of the sidebar to see the live
+              result</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span
+                style="color:var(--accent);font-weight:700;min-width:20px;">5.</span> Both files (admin.html +
+              portfolio.html) must be in the same folder</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Content Summary</div>
+          <div id="dashboard-summary" style="font-size:13px;color:var(--text2);line-height:2;"></div>
+        </div>
+      </div>
+
+      <!-- ═══ HERO PANEL ═══ -->
+      <div class="panel" id="panel-hero">
+        <div class="card">
+          <div class="card-title">🏠 Hero Section</div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" id="hero-firstname" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name / Initials</label>
+              <input class="form-input" id="hero-lastname" oninput="markUnsaved()" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tagline (shown below name)</label>
+            <input class="form-input" id="hero-tagline" oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Short Description</label>
+            <textarea class="form-textarea" id="hero-desc" oninput="markUnsaved()"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">College / University</label>
+            <input class="form-input" id="hero-college" oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year of Study</label>
+            <input class="form-input" id="hero-year" oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resume PDF URL (for download button)</label>
+            <input class="form-input" id="hero-resume-url" placeholder="https://..." oninput="markUnsaved()" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⌨️ Typing Animation Texts</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">These rotate in the hero typing animation
+            (one per line)</div>
+          <textarea class="form-textarea" id="hero-typing" rows="6" oninput="markUnsaved()"
+            placeholder="Web Developer&#10;AI Enthusiast&#10;IoT Explorer"></textarea>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔗 Social Links</div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">GitHub URL</label>
+              <input class="form-input" id="social-github" placeholder="https://github.com/..."
+                oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">LinkedIn URL</label>
+              <input class="form-input" id="social-linkedin" placeholder="https://linkedin.com/in/..."
+                oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input class="form-input" id="social-email" placeholder="you@email.com" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Twitter / X URL (optional)</label>
+              <input class="form-input" id="social-twitter" placeholder="https://twitter.com/..."
+                oninput="markUnsaved()" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ABOUT PANEL ═══ -->
+      <div class="panel" id="panel-about">
+        <div class="card">
+          <div class="card-title">👤 About Me</div>
+          <div class="form-group">
+            <label class="form-label">Bio Paragraph 1</label>
+            <textarea class="form-textarea" id="about-bio1" oninput="markUnsaved()"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio Paragraph 2</label>
+            <textarea class="form-textarea" id="about-bio2" oninput="markUnsaved()"></textarea>
+          </div>
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Stat 1 — Number</label>
+              <input class="form-input" id="about-stat1-num" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stat 1 — Label</label>
+              <input class="form-input" id="about-stat1-label" oninput="markUnsaved()" />
+            </div>
+            <div></div>
+            <div class="form-group">
+              <label class="form-label">Stat 2 — Number</label>
+              <input class="form-input" id="about-stat2-num" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stat 2 — Label</label>
+              <input class="form-input" id="about-stat2-label" oninput="markUnsaved()" />
+            </div>
+            <div></div>
+            <div class="form-group">
+              <label class="form-label">Stat 3 — Number</label>
+              <input class="form-input" id="about-stat3-num" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stat 3 — Label</label>
+              <input class="form-input" id="about-stat3-label" oninput="markUnsaved()" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Interest Tags (comma-separated, include emoji)</label>
+            <input class="form-input" id="about-interests" placeholder="🤖 AI/ML, 🌐 Web Dev, 📡 IoT"
+              oninput="markUnsaved()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SKILLS PANEL ═══ -->
+      <div class="panel" id="panel-skills">
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab(this,'tab-prog')">Programming</div>
+          <div class="tab" onclick="switchTab(this,'tab-web')">Web & Frameworks</div>
+          <div class="tab" onclick="switchTab(this,'tab-tools')">Tools</div>
+          <div class="tab" onclick="switchTab(this,'tab-journey')">Learning Journey</div>
+        </div>
+
+        <div id="tab-prog" class="tab-panel">
+          <div class="card">
+            <div class="card-title">⚡ Programming Languages <button class="btn btn-ghost btn-sm"
+                style="margin-left:auto;" onclick="addSkillRow('prog')">+ Add Skill</button></div>
+            <div id="skills-prog-list"></div>
+          </div>
+        </div>
+        <div id="tab-web" class="tab-panel" style="display:none;">
+          <div class="card">
+            <div class="card-title">🌐 Web & Frameworks <button class="btn btn-ghost btn-sm" style="margin-left:auto;"
+                onclick="addSkillRow('web')">+ Add Skill</button></div>
+            <div id="skills-web-list"></div>
+          </div>
+        </div>
+        <div id="tab-tools" class="tab-panel" style="display:none;">
+          <div class="card">
+            <div class="card-title">🛠️ Tools & Platforms <button class="btn btn-ghost btn-sm" style="margin-left:auto;"
+                onclick="addSkillRow('tools')">+ Add Skill</button></div>
+            <div id="skills-tools-list"></div>
+          </div>
+        </div>
+        <div id="tab-journey" class="tab-panel" style="display:none;">
+          <div class="card">
+            <div class="card-title">📈 Learning Journey <button class="btn btn-ghost btn-sm" style="margin-left:auto;"
+                onclick="addJourneyRow()">+ Add Step</button></div>
+            <div id="skills-journey-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PROJECTS PANEL ═══ -->
+      <div class="panel" id="panel-projects">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div style="font-size:14px;color:var(--text2);">Manage your featured projects</div>
+          <button class="btn btn-primary btn-sm" onclick="addProject()">+ Add Project</button>
+        </div>
+        <div id="projects-list"></div>
+      </div>
+
+      <!-- ═══ RESUME PANEL ═══ -->
+      <div class="panel" id="panel-resume">
+        <div class="card">
+          <div class="card-title">📄 Resume & Timeline</div>
+          <div class="form-group">
+            <label class="form-label">Resume PDF URL</label>
+            <input class="form-input" id="resume-url" placeholder="https://drive.google.com/..."
+              oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resume Last Updated (shown to visitor)</label>
+            <input class="form-input" id="resume-updated" placeholder="March 2025" oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resume Highlights (one per line)</label>
+            <textarea class="form-textarea" id="resume-highlights" rows="5" oninput="markUnsaved()"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Timeline <button class="btn btn-ghost btn-sm" style="margin-left:auto;"
+              onclick="addTimelineItem()">+ Add Entry</button></div>
+          <div id="timeline-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══ ACHIEVEMENTS PANEL ═══ -->
+      <div class="panel" id="panel-achievements">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div style="font-size:14px;color:var(--text2);">Awards, certifications & milestones</div>
+          <button class="btn btn-primary btn-sm" onclick="addAchievement()">+ Add Achievement</button>
+        </div>
+        <div id="achievements-list"></div>
+      </div>
+
+      <!-- ═══ CONTACT PANEL ═══ -->
+      <div class="panel" id="panel-contact">
+        <div class="card">
+          <div class="card-title">📬 Contact Information</div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Display Email</label>
+              <input class="form-input" id="contact-email" oninput="markUnsaved()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input class="form-input" id="contact-location" oninput="markUnsaved()" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Availability Status</label>
+            <input class="form-input" id="contact-status" placeholder="Available for Internships & Collab"
+              oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Section Description</label>
+            <textarea class="form-textarea" id="contact-desc" oninput="markUnsaved()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ APPEARANCE PANEL ═══ -->
+      <div class="panel" id="panel-appearance">
+        <div class="card">
+          <div class="card-title">🎨 Theme Colors</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Choose the neon accent color for the
+            portfolio</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;" id="color-swatches">
+            <div class="color-swatch active" style="background:#00ff88;" data-color="#00ff88"
+              onclick="selectColor(this)" title="Neon Green"></div>
+            <div class="color-swatch" style="background:#00e5ff;" data-color="#00e5ff" onclick="selectColor(this)"
+              title="Cyan"></div>
+            <div class="color-swatch" style="background:#a78bfa;" data-color="#a78bfa" onclick="selectColor(this)"
+              title="Purple"></div>
+            <div class="color-swatch" style="background:#f97316;" data-color="#f97316" onclick="selectColor(this)"
+              title="Orange"></div>
+            <div class="color-swatch" style="background:#ec4899;" data-color="#ec4899" onclick="selectColor(this)"
+              title="Pink"></div>
+            <div class="color-swatch" style="background:#facc15;" data-color="#facc15" onclick="selectColor(this)"
+              title="Yellow"></div>
+            <div class="color-swatch" style="background:#10b981;" data-color="#10b981" onclick="selectColor(this)"
+              title="Emerald"></div>
+            <div class="color-swatch" style="background:#3b82f6;" data-color="#3b82f6" onclick="selectColor(this)"
+              title="Blue"></div>
+          </div>
+          <div class="form-group" style="margin-top:16px;">
+            <label class="form-label">Custom Color (hex)</label>
+            <input class="form-input" id="custom-color" placeholder="#00ff88" oninput="markUnsaved()" />
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌙 Default Theme</div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <label class="switch"><input type="checkbox" id="default-dark" checked onchange="markUnsaved()" />
+              <div class="slider"></div>
+            </label>
+            <span style="font-size:14px;">Default to Dark Mode</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📝 SEO Settings</div>
+          <div class="form-group">
+            <label class="form-label">Page Title</label>
+            <input class="form-input" id="seo-title" oninput="markUnsaved()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meta Description</label>
+            <textarea class="form-textarea" id="seo-desc" rows="3" oninput="markUnsaved()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SETTINGS PANEL ═══ -->
+      <div class="panel" id="panel-settings">
+        <div class="card">
+          <div class="card-title">🔐 Change Admin Password</div>
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" class="form-input" id="cur-pass" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" class="form-input" id="new-pass" />
+          </div>
+          <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+          <div id="pass-msg" style="margin-top:8px;font-size:13px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">💾 Data Management</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-ghost" onclick="exportData()">📤 Export Data (JSON)</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📥 Import
+              Data</button>
+            <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)" />
+            <button class="btn btn-danger" onclick="if(confirm('Reset ALL data to defaults?'))resetData()">🗑 Reset to
+              Defaults</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- TOAST -->
+  <div id="toast">✓ Changes saved & published!</div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════
+       PORTFOLIO CMS — ADMIN LOGIC
+    ═══════════════════════════════════════════════════════ */
+
+    const STORAGE_KEY = 'portfolioCMSData';
+    const PASS_KEY = 'portfolioCMSPass';
+
+    // ── DEFAULT DATA ──────────────────────────────────────
+
+    const defaultData = {
+      hero: {
+        firstname: 'Tejas', lastname: 'A',
+        tagline: 'Building tomorrow\'s tech, one commit at a time.',
+        desc: '2nd Year B.E. Computer Science · Vidyavardhaka College of Engineering, Mysuru.',
+        college: 'Vidyavardhaka College of Engineering, Mysuru',
+        year: '2nd Year B.E.',
+        resumeUrl: '#',
+        typing: 'Web Developer\nAI Enthusiast\nIoT Explorer\nProblem Solver\nOpen Source Fan',
+      },
+      social: {
+        github: 'https://github.com/tejas813',
+        linkedin: 'https://www.linkedin.com/in/tejas-a-027582338/',
+        email: 'atejas361@gmail.com',
+        twitter: '',
+      },
+      about: {
+        bio1: "Hey there! I'm Tejas A, a passionate 2nd-year B.E. Computer Science student at Vidyavardhaka College of Engineering, Mysuru. I thrive at the intersection of creativity and logic — turning complex problems into elegant code.",
+        bio2: "From building full-stack web applications to experimenting with machine learning models and IoT systems, I love pushing the boundaries of what's possible. Currently seeking internship & project collaboration opportunities.",
+        stat1num: '8+', stat1label: 'Projects',
+        stat2num: '3+', stat2label: 'Hackathons',
+        stat3num: '2nd', stat3label: 'Year B.E.',
+        interests: '🤖 AI/ML, 🌐 Web Dev, 📡 IoT, ☁️ Cloud, 🔐 Cybersecurity, 📱 Mobile Dev',
+      },
+      skills: {
+        prog: [
+          { name: 'Python', pct: 85, color: '#00ff88' },
+          { name: 'C / C++', pct: 75, color: '#00e5ff' },
+          { name: 'JavaScript', pct: 80, color: '#ffbe0b' },
+          { name: 'Java', pct: 65, color: '#ff006e' },
+          { name: 'SQL', pct: 70, color: '#00ff88' },
+        ],
+        web: [
+          { name: 'React.js', pct: 80, color: '#00e5ff' },
+          { name: 'Node.js', pct: 70, color: '#00ff88' },
+          { name: 'HTML/CSS', pct: 90, color: '#ffbe0b' },
+          { name: 'Tailwind CSS', pct: 85, color: '#00e5ff' },
+          { name: 'REST APIs', pct: 75, color: '#ff006e' },
+        ],
+        tools: [
+          { name: 'Git & GitHub', pct: 85, color: '#00ff88' },
+          { name: 'Linux / Bash', pct: 70, color: '#00e5ff' },
+          { name: 'VS Code', pct: 90, color: '#ffbe0b' },
+          { name: 'Arduino / IoT', pct: 65, color: '#ff006e' },
+          { name: 'Firebase', pct: 60, color: '#00ff88' },
+        ],
+      },
+      projects: [
+        { title: 'SmartCampus IoT Dashboard', desc: 'Real-time monitoring dashboard for college infrastructure using ESP32, MQTT, and React.', tech: 'React, Node.js, MQTT, ESP32, MongoDB', github: '#', live: '#', emoji: '🏫', color: '#00ff88' },
+        { title: 'AI Study Buddy', desc: 'LLM-powered study assistant that generates quizzes, summarizes textbooks, and creates flashcards.', tech: 'Python, LangChain, OpenAI, Streamlit', github: '#', live: '#', emoji: '🤖', color: '#00e5ff' },
+        { title: 'Dev Portfolio', desc: 'Modern, animated personal portfolio with custom cursor, particles, scroll animations, and dark/light mode.', tech: 'HTML, CSS, JavaScript, Canvas API', github: '#', live: '#', emoji: '🎨', color: '#ffbe0b' },
+        { title: 'Crop Disease Detector', desc: 'CNN-based mobile app that identifies crop diseases from leaf images with 92% accuracy.', tech: 'Python, TensorFlow, React Native, Flask', github: '#', live: '#', emoji: '🌾', color: '#ff006e' },
+        { title: 'CodeCollab – Real-time IDE', desc: 'Collaborative code editor with real-time sync, video chat, and AI code suggestions.', tech: 'React, Socket.io, Monaco Editor, WebRTC', github: '#', live: '#', emoji: '💻', color: '#00ff88' },
+        { title: 'Smart Waste Management', desc: 'IoT system using ultrasonic sensors and ML to optimize waste collection routes.', tech: 'Arduino, Python, Google Maps API, Firebase', github: '#', live: '#', emoji: '♻️', color: '#00e5ff' },
+      ],
+      resume: {
+        url: '#', updated: 'March 2025',
+        highlights: 'Full-Stack Projects\nHackathon Finalist\nAI/ML Coursework\nOpen Source Contributor',
+        timeline: [
+          { period: '2024 – Present', title: 'B.E. Computer Science', org: 'Vidyavardhaka College of Engineering, Mysuru', detail: 'CGPA: 9.08 / 10' },
+          { period: '2021 – 2024', title: 'PU (PCMB) — 97.33%', org: 'STG Pre-University College, Chinnkurli', detail: '' },
+          { period: 'Jun 2024', title: 'Web Dev Intern (Volunteer)', org: 'Local NGO', detail: 'Built responsive donation portal' },
+          { period: 'Jan 2025', title: 'AI Club Core Member', org: 'VCE AI/ML Club', detail: 'Workshop organizer' },
+        ],
+      },
+      achievements: [
+        { emoji: '🏆', title: '2nd Place – VCE Hackathon 2024', desc: 'Smart Waste Management with IoT & ML', color: '#ffbe0b' },
+        { emoji: '🎓', title: 'Google Cloud Essentials', desc: 'Completed Google Cloud Skills Boost program', color: '#00e5ff' },
+        { emoji: '🥇', title: 'NPTEL – Python for DS', desc: 'Elite + Silver badge · IIT Madras', color: '#00ff88' },
+        { emoji: '🌐', title: 'Meta Front-End Developer', desc: 'Coursera Professional Certificate', color: '#ff006e' },
+        { emoji: '🤖', title: 'AI Workshop Speaker', desc: 'Conducted ML workshop at VCE AI Club', color: '#00ff88' },
+        { emoji: '⭐', title: 'GitHub Arctic Code Vault', desc: 'Open-source project preserved in Arctic Code Vault', color: '#00e5ff' },
+      ],
+      contact: {
+        email: 'atejas361@gmail.com', location: 'Mysuru, Karnataka, India',
+        status: 'Available for Internships & Collab',
+        desc: 'Have an opportunity or want to collaborate? I\'d love to hear from you.',
+      },
+      appearance: {
+        accentColor: '#00ff88', defaultDark: true,
+        seoTitle: 'Tejas A | CS Student & Developer',
+        seoDesc: 'Portfolio of Tejas A — 2nd year CS student at VCE. Web Developer, AI Enthusiast, IoT Explorer.',
+      },
+    };
+
+    // ── LOAD / SAVE ───────────────────────────────────────
+
+    let data = JSON.parse(JSON.stringify(defaultData));
+    let isDataLoaded = false;
+    
+    // Fetch from backend server
+    async function loadBackendData() {
+      try {
+        const res = await fetch('/api/data');
+        if (res.ok) {
+           const json = await res.json();
+           if (json && Object.keys(json).length > 0) {
+             data = json;
+           }
+        }
+      } catch (err) {
+        console.warn('Could not contact server, using defaults.', err);
+      }
+      isDataLoaded = true;
+    }
+    loadBackendData();
+
+    async function saveAll() {
+      collectAll();
+      
+      try {
+        await fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        document.getElementById('save-indicator').className = 'save-badge saved';
+        document.getElementById('save-indicator').textContent = '● Saved';
+        showToast('✓ Changes saved & published!');
+        updateDashboard();
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Error saving to server!');
+      }
+    }
+
+    function markUnsaved() {
+      document.getElementById('save-indicator').className = 'save-badge unsaved';
+      document.getElementById('save-indicator').textContent = '● Unsaved';
+    }
+
+    // ── LOGIN ─────────────────────────────────────────────
+
+    async function doLogin() {
+      const pass = document.getElementById('login-pass').value;
+      const stored = localStorage.getItem(PASS_KEY) || 'admin123';
+      if (pass === stored) {
+        const btn = document.querySelector('#login-screen button');
+        btn.textContent = 'Loading Data...';
+        btn.disabled = true;
+        
+        // Wait for data to be loaded from backend before passing to UI
+        while (!isDataLoaded) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        
+        document.getElementById('login-screen').style.display = 'none';
+        initAll();
+      } else {
+        document.getElementById('login-err').style.display = 'block';
+      }
+    }
+
+    function changePassword() {
+      const cur = document.getElementById('cur-pass').value;
+      const nw = document.getElementById('new-pass').value;
+      const stored = localStorage.getItem(PASS_KEY) || 'admin123';
+      const msg = document.getElementById('pass-msg');
+      if (cur !== stored) { msg.style.color = 'var(--red)'; msg.textContent = '✗ Current password incorrect.'; return; }
+      if (nw.length < 4) { msg.style.color = 'var(--red)'; msg.textContent = '✗ Password too short (min 4 chars).'; return; }
+      localStorage.setItem(PASS_KEY, nw);
+      msg.style.color = 'var(--green)'; msg.textContent = '✓ Password updated!';
+    }
+
+    // ── NAVIGATION ────────────────────────────────────────
+
+    function showPanel(name, el) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      el.classList.add('active');
+      document.getElementById('topbar-title').textContent = el.textContent.trim();
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').style.transform =
+        document.getElementById('sidebar').style.transform === 'translateX(0px)' ? 'translateX(-100%)' : 'translateX(0px)';
+    }
+
+    function switchTab(el, targetId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(t => t.style.display = 'none');
+      el.classList.add('active');
+      document.getElementById(targetId).style.display = 'block';
+    }
+
+    // ── INIT ALL FIELDS ───────────────────────────────────
+
+    function initAll() {
+      const d = data;
+      // Hero
+      document.getElementById('hero-firstname').value = d.hero.firstname;
+      document.getElementById('hero-lastname').value = d.hero.lastname;
+      document.getElementById('hero-tagline').value = d.hero.tagline;
+      document.getElementById('hero-desc').value = d.hero.desc;
+      document.getElementById('hero-college').value = d.hero.college;
+      document.getElementById('hero-year').value = d.hero.year;
+      document.getElementById('hero-resume-url').value = d.hero.resumeUrl;
+      document.getElementById('hero-typing').value = d.hero.typing;
+      // Social
+      document.getElementById('social-github').value = d.social.github;
+      document.getElementById('social-linkedin').value = d.social.linkedin;
+      document.getElementById('social-email').value = d.social.email;
+      document.getElementById('social-twitter').value = d.social.twitter;
+      // About
+      document.getElementById('about-bio1').value = d.about.bio1;
+      document.getElementById('about-bio2').value = d.about.bio2;
+      document.getElementById('about-stat1-num').value = d.about.stat1num;
+      document.getElementById('about-stat1-label').value = d.about.stat1label;
+      document.getElementById('about-stat2-num').value = d.about.stat2num;
+      document.getElementById('about-stat2-label').value = d.about.stat2label;
+      document.getElementById('about-stat3-num').value = d.about.stat3num;
+      document.getElementById('about-stat3-label').value = d.about.stat3label;
+      document.getElementById('about-interests').value = d.about.interests;
+      // Skills
+      renderSkillsList('prog'); renderSkillsList('web'); renderSkillsList('tools');
+      renderJourneyList();
+      // Projects
+      renderProjects();
+      // Resume
+      document.getElementById('resume-url').value = d.resume.url;
+      document.getElementById('resume-updated').value = d.resume.updated;
+      document.getElementById('resume-highlights').value = d.resume.highlights;
+      renderTimeline();
+      // Achievements
+      renderAchievements();
+      // Contact
+      document.getElementById('contact-email').value = d.contact.email;
+      document.getElementById('contact-location').value = d.contact.location;
+      document.getElementById('contact-status').value = d.contact.status;
+      document.getElementById('contact-desc').value = d.contact.desc;
+      // Appearance
+      document.getElementById('custom-color').value = d.appearance.accentColor;
+      document.getElementById('default-dark').checked = d.appearance.defaultDark;
+      document.getElementById('seo-title').value = d.appearance.seoTitle;
+      document.getElementById('seo-desc').value = d.appearance.seoDesc;
+      document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('active', s.dataset.color === d.appearance.accentColor);
+      });
+      updateDashboard();
+    }
+
+    // ── COLLECT ALL FIELDS ────────────────────────────────
+
+    function collectAll() {
+      data.hero.firstname = v('hero-firstname');
+      data.hero.lastname = v('hero-lastname');
+      data.hero.tagline = v('hero-tagline');
+      data.hero.desc = v('hero-desc');
+      data.hero.college = v('hero-college');
+      data.hero.year = v('hero-year');
+      data.hero.resumeUrl = v('hero-resume-url');
+      data.hero.typing = v('hero-typing');
+      data.social.github = v('social-github');
+      data.social.linkedin = v('social-linkedin');
+      data.social.email = v('social-email');
+      data.social.twitter = v('social-twitter');
+      data.about.bio1 = v('about-bio1');
+      data.about.bio2 = v('about-bio2');
+      data.about.stat1num = v('about-stat1-num');
+      data.about.stat1label = v('about-stat1-label');
+      data.about.stat2num = v('about-stat2-num');
+      data.about.stat2label = v('about-stat2-label');
+      data.about.stat3num = v('about-stat3-num');
+      data.about.stat3label = v('about-stat3-label');
+      data.about.interests = v('about-interests');
+      data.skills.prog = collectSkills('prog');
+      data.skills.web = collectSkills('web');
+      data.skills.tools = collectSkills('tools');
+      data.resume.url = v('resume-url');
+      data.resume.updated = v('resume-updated');
+      data.resume.highlights = v('resume-highlights');
+      data.contact.email = v('contact-email');
+      data.contact.location = v('contact-location');
+      data.contact.status = v('contact-status');
+      data.contact.desc = v('contact-desc');
+      data.appearance.accentColor = v('custom-color') || data.appearance.accentColor;
+      data.appearance.defaultDark = document.getElementById('default-dark').checked;
+      data.appearance.seoTitle = v('seo-title');
+      data.appearance.seoDesc = v('seo-desc');
+    }
+    function v(id) { return document.getElementById(id)?.value || ''; }
+
+    // ── SKILLS ───────────────────────────────────────────
+
+    function renderSkillsList(cat) {
+      const list = document.getElementById(`skills-${cat}-list`);
+      list.innerHTML = '';
+      data.skills[cat].forEach((s, i) => {
+        list.innerHTML += `
+      <div class="list-item" style="display:grid;grid-template-columns:1fr 100px 80px 36px;gap:10px;align-items:center;">
+        <input class="form-input" value="${s.name}" style="font-size:13px;" onchange="data.skills['${cat}'][${i}].name=this.value;markUnsaved()"/>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <input type="range" min="0" max="100" value="${s.pct}" style="flex:1;"
+            oninput="this.nextElementSibling.textContent=this.value+'%';data.skills['${cat}'][${i}].pct=+this.value;markUnsaved()"/>
+          <span style="font-size:12px;color:var(--accent);min-width:36px;">${s.pct}%</span>
+        </div>
+        <input class="form-input" value="${s.color}" style="font-size:12px;" onchange="data.skills['${cat}'][${i}].color=this.value;markUnsaved()"/>
+        <button class="btn btn-danger" style="padding:6px 8px;" onclick="removeSkill('${cat}',${i})">✕</button>
+      </div>`;
+      });
+    }
+
+    function addSkillRow(cat) {
+      data.skills[cat].push({ name: 'New Skill', pct: 50, color: '#00ff88' });
+      renderSkillsList(cat); markUnsaved();
+    }
+    function removeSkill(cat, i) {
+      data.skills[cat].splice(i, 1); renderSkillsList(cat); markUnsaved();
+    }
+    function collectSkills(cat) {
+      return data.skills[cat]; // already updated via oninput handlers
+    }
+
+    function renderJourneyList() {
+      const list = document.getElementById('skills-journey-list');
+      list.innerHTML = '';
+      (data.skills.journey || []).forEach((j, i) => {
+        list.innerHTML += `
+      <div class="list-item" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input class="form-input" style="flex:1;min-width:120px;" value="${j.period}" placeholder="Period (e.g., 2024)" onchange="data.skills.journey[${i}].period=this.value;markUnsaved()"/>
+          <input class="form-input" style="flex:2;min-width:200px;" value="${j.title}" placeholder="Main Topic" onchange="data.skills.journey[${i}].title=this.value;markUnsaved()"/>
+          <button class="btn btn-danger" style="padding:6px 12px;height:42px;" onclick="removeJourneyRow(${i})">✕</button>
+        </div>
+        <textarea class="form-textarea" rows="2" placeholder="Description of what you learned..." onchange="data.skills.journey[${i}].desc=this.value;markUnsaved()">${j.desc}</textarea>
+      </div>`;
+      });
+    }
+    function addJourneyRow() {
+      if (!data.skills.journey) data.skills.journey = [];
+      data.skills.journey.push({ period: 'New Period', title: 'New Topic', desc: 'Description' });
+      renderJourneyList(); markUnsaved();
+    }
+    function removeJourneyRow(i) {
+      data.skills.journey.splice(i, 1); renderJourneyList(); markUnsaved();
+    }
+
+    // ── PROJECTS ─────────────────────────────────────────
+
+    function renderProjects() {
+      const list = document.getElementById('projects-list');
+      list.innerHTML = '';
+      data.projects.forEach((p, i) => {
+        list.innerHTML += `
+      <div class="card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <input class="form-input" value="${p.emoji}" style="width:60px;text-align:center;font-size:20px;" onchange="data.projects[${i}].emoji=this.value;markUnsaved()"/>
+          <input class="form-input" value="${p.title}" style="flex:1;font-weight:600;" placeholder="Project Title" onchange="data.projects[${i}].title=this.value;markUnsaved()"/>
+          <button class="btn btn-danger btn-sm" onclick="removeProject(${i})">✕ Remove</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" rows="2" onchange="data.projects[${i}].desc=this.value;markUnsaved()">${p.desc}</textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Tech Stack (comma-separated)</label>
+            <input class="form-input" value="${p.tech}" onchange="data.projects[${i}].tech=this.value;markUnsaved()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Accent Color</label>
+            <input class="form-input" value="${p.color}" onchange="data.projects[${i}].color=this.value;markUnsaved()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">GitHub URL</label>
+            <input class="form-input" value="${p.github}" onchange="data.projects[${i}].github=this.value;markUnsaved()"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Live Demo URL</label>
+            <input class="form-input" value="${p.live}" onchange="data.projects[${i}].live=this.value;markUnsaved()"/>
+          </div>
+        </div>
+      </div>`;
+      });
+      document.getElementById('stat-projects').textContent = data.projects.length;
+    }
+
+    function addProject() {
+      data.projects.push({ title: 'New Project', desc: 'Project description', tech: 'Tech1, Tech2', github: '#', live: '#', emoji: '🚀', color: '#00ff88' });
+      renderProjects(); markUnsaved();
+    }
+    function removeProject(i) {
+      if (confirm('Remove this project?')) { data.projects.splice(i, 1); renderProjects(); markUnsaved(); }
+    }
+
+    // ── TIMELINE ─────────────────────────────────────────
+
+    function renderTimeline() {
+      const list = document.getElementById('timeline-list');
+      list.innerHTML = '';
+      data.resume.timeline.forEach((t, i) => {
+        list.innerHTML += `
+      <div class="list-item" style="display:grid;grid-template-columns:120px 1fr 1fr auto;gap:10px;align-items:start;">
+        <input class="form-input" value="${t.period}" placeholder="Period" style="font-size:12px;" onchange="data.resume.timeline[${i}].period=this.value;markUnsaved()"/>
+        <input class="form-input" value="${t.title}" placeholder="Title / Role" onchange="data.resume.timeline[${i}].title=this.value;markUnsaved()"/>
+        <input class="form-input" value="${t.org}" placeholder="Organization" onchange="data.resume.timeline[${i}].org=this.value;markUnsaved()"/>
+        <button class="btn btn-danger" style="padding:6px 8px;" onclick="removeTimeline(${i})">✕</button>
+        <div></div>
+        <input class="form-input" value="${t.detail}" placeholder="Detail (optional)" style="font-size:12px;" onchange="data.resume.timeline[${i}].detail=this.value;markUnsaved()" colspan="2"/>
+      </div>`;
+      });
+    }
+
+    function addTimelineItem() {
+      data.resume.timeline.push({ period: '2025', title: 'New Entry', org: 'Organization', detail: '' });
+      renderTimeline(); markUnsaved();
+    }
+    function removeTimeline(i) {
+      data.resume.timeline.splice(i, 1); renderTimeline(); markUnsaved();
+    }
+
+    // ── ACHIEVEMENTS ─────────────────────────────────────
+
+    function renderAchievements() {
+      const list = document.getElementById('achievements-list');
+      list.innerHTML = '';
+      data.achievements.forEach((a, i) => {
+        list.innerHTML += `
+      <div class="list-item" style="display:grid;grid-template-columns:60px 1fr 1fr 80px auto;gap:10px;align-items:center;">
+        <input class="form-input" value="${a.emoji}" style="text-align:center;font-size:18px;" onchange="data.achievements[${i}].emoji=this.value;markUnsaved()"/>
+        <input class="form-input" value="${a.title}" placeholder="Title" onchange="data.achievements[${i}].title=this.value;markUnsaved()"/>
+        <input class="form-input" value="${a.desc}" placeholder="Description" onchange="data.achievements[${i}].desc=this.value;markUnsaved()"/>
+        <input class="form-input" value="${a.color}" style="font-size:12px;" onchange="data.achievements[${i}].color=this.value;markUnsaved()"/>
+        <button class="btn btn-danger" style="padding:6px 8px;" onclick="removeAch(${i})">✕</button>
+      </div>`;
+      });
+      document.getElementById('stat-achievements').textContent = data.achievements.length;
+    }
+
+    function addAchievement() {
+      data.achievements.push({ emoji: '🌟', title: 'New Achievement', desc: 'Description', color: '#ffbe0b' });
+      renderAchievements(); markUnsaved();
+    }
+    function removeAch(i) {
+      data.achievements.splice(i, 1); renderAchievements(); markUnsaved();
+    }
+
+    // ── APPEARANCE ───────────────────────────────────────
+
+    function selectColor(el) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('custom-color').value = el.dataset.color;
+      data.appearance.accentColor = el.dataset.color;
+      markUnsaved();
+    }
+
+    // ── DASHBOARD SUMMARY ─────────────────────────────────
+
+    function updateDashboard() {
+      const d = data;
+      document.getElementById('dashboard-summary').innerHTML = `
+    <div>👤 <strong style="color:var(--text);">Name:</strong> ${d.hero.firstname} ${d.hero.lastname}</div>
+    <div>🏫 <strong style="color:var(--text);">College:</strong> ${d.hero.college}</div>
+    <div>📧 <strong style="color:var(--text);">Email:</strong> ${d.social.email}</div>
+    <div>📍 <strong style="color:var(--text);">Location:</strong> ${d.contact.location}</div>
+    <div>💻 <strong style="color:var(--text);">Projects:</strong> ${d.projects.length} listed</div>
+    <div>⚡ <strong style="color:var(--text);">Skills:</strong> ${d.skills.prog.length + d.skills.web.length + d.skills.tools.length} total</div>
+    <div>🏆 <strong style="color:var(--text);">Achievements:</strong> ${d.achievements.length} listed</div>
+    <div>🎨 <strong style="color:var(--text);">Accent Color:</strong> <span style="color:${d.appearance.accentColor}">${d.appearance.accentColor}</span></div>
+  `;
+      document.getElementById('stat-skills').textContent = d.skills.prog.length + d.skills.web.length + d.skills.tools.length;
+    }
+
+    // ── EXPORT / IMPORT / RESET ───────────────────────────
+
+    function exportData() {
+      collectAll();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'portfolio-data.json'; a.click();
+    }
+
+    function importData(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try { data = JSON.parse(ev.target.result); initAll(); markUnsaved(); showToast('✓ Data imported!'); }
+        catch { alert('Invalid JSON file.'); }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetData() {
+      data = JSON.parse(JSON.stringify(defaultData));
+      localStorage.removeItem(STORAGE_KEY);
+      initAll(); markUnsaved(); showToast('⚠ Reset to defaults');
+    }
+
+    // ── TOAST ─────────────────────────────────────────────
+
+    function showToast(msg) {
+      const t = document.getElementById('toast'); t.textContent = msg;
+      t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── DATA PERSISTS TO BACKEND ON SAVE AND PUBLISH ──────
+  </script>
+</body>
+
+</html>
