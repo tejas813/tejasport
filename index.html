@@ -1182,6 +1182,27 @@
     document.getElementById('footer-name').textContent = `${data.hero.firstname} ${data.hero.lastname}`;
     document.getElementById('footer-sub').textContent = `Built with ❤️ & ☕ · ${data.hero.college}`;
     document.getElementById('footer-copy').textContent = `© ${new Date().getFullYear()} ${data.hero.firstname} ${data.hero.lastname} · All rights reserved`;
+
+    // ── REVEAL OBSERVER (runs after all dynamic content is in DOM) ──
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('vis');
+          e.target.querySelectorAll('.sbar-fill').forEach(b => b.classList.add('go'));
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // ── LOADER HIDE (after content is ready) ────────────────
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('out');
+      document.querySelectorAll('.reveal').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight) el.classList.add('vis');
+      });
+    }, 800);
+
     } // End of initPortfolio
     initPortfolio();
 
@@ -1239,22 +1260,8 @@
       });
     });
 
-    // ── REVEAL OBSERVER ──────────────────────────────────
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('vis');
-          e.target.querySelectorAll('.sbar-fill').forEach(b => b.classList.add('go'));
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-    // ── LOADER ───────────────────────────────────────────
-    setTimeout(() => {
-      document.getElementById('loader').classList.add('out');
-      document.querySelectorAll('.reveal').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < window.innerHeight) el.classList.add('vis'); });
-    }, 2200);
+    // ── LOADER shown while initPortfolio() runs ─────────────
+    // (Reveal observer and loader hide are now inside initPortfolio)
   </script>
 </body>
 
