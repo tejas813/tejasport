@@ -929,6 +929,8 @@
     /* ═══════════════════════════════════════════════════
        PORTFOLIO — reads data from Supabase backend
     ═══════════════════════════════════════════════════ */
+
+    const defaultData = {
       hero: {
         firstname: 'Tejas', lastname: 'A',
         tagline: 'Building tomorrow\'s tech, one commit at a time.',
@@ -1015,7 +1017,7 @@
 
     let data = defaultData;
     let nc = '#00ff88';
-    const defaultData = {
+
     async function initPortfolio() {
       try {
         const res = await fetch('/api/data');
@@ -1028,7 +1030,8 @@
       // ── APPLY NEON COLOR ──────────────────────────────────
       nc = data.appearance.accentColor || '#00ff88';
       document.documentElement.style.setProperty('--neon', nc);
-      // ── THEME ─────────────────────────────────────────────
+
+    // ── THEME ─────────────────────────────────────────────
     let isDark = data.appearance.defaultDark !== false;
     function applyTheme() {
       document.body.classList.toggle('light', !isDark);
