@@ -929,7 +929,14 @@
     /* ═══════════════════════════════════════════════════
        PORTFOLIO — reads data from Supabase backend
     ═══════════════════════════════════════════════════ */
-
+// ── THEME ─────────────────────────────────────────────
+    let isDark = data.appearance.defaultDark !== false;
+    function applyTheme() {
+      document.body.classList.toggle('light', !isDark);
+      document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+    }
+    applyTheme();
+    function toggleTheme() { isDark = !isDark; applyTheme(); }
     const defaultData = {
       hero: {
         firstname: 'Tejas', lastname: 'A',
@@ -1030,15 +1037,6 @@
       // ── APPLY NEON COLOR ──────────────────────────────────
       nc = data.appearance.accentColor || '#00ff88';
       document.documentElement.style.setProperty('--neon', nc);
-
-    // ── THEME ─────────────────────────────────────────────
-    let isDark = data.appearance.defaultDark !== false;
-    function applyTheme() {
-      document.body.classList.toggle('light', !isDark);
-      document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
-    }
-    applyTheme();
-    function toggleTheme() { isDark = !isDark; applyTheme(); }
 
     // ── SEO ───────────────────────────────────────────────
     document.getElementById('page-title').textContent = data.appearance.seoTitle || `${data.hero.firstname} ${data.hero.lastname} | Portfolio`;
