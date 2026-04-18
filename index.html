@@ -929,15 +929,6 @@
     /* ═══════════════════════════════════════════════════
        PORTFOLIO — reads data from Supabase backend
     ═══════════════════════════════════════════════════ */
-// ── THEME ─────────────────────────────────────────────
-    let isDark = data.appearance.defaultDark !== false;
-    function applyTheme() {
-      document.body.classList.toggle('light', !isDark);
-      document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
-    }
-    applyTheme();
-    function toggleTheme() { isDark = !isDark; applyTheme(); }
-    const defaultData = {
       hero: {
         firstname: 'Tejas', lastname: 'A',
         tagline: 'Building tomorrow\'s tech, one commit at a time.',
@@ -1024,7 +1015,15 @@
 
     let data = defaultData;
     let nc = '#00ff88';
-
+   // ── THEME ─────────────────────────────────────────────
+    let isDark = data.appearance.defaultDark !== false;
+    function applyTheme() {
+      document.body.classList.toggle('light', !isDark);
+      document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+    }
+    applyTheme();
+    function toggleTheme() { isDark = !isDark; applyTheme(); }
+    const defaultData = {
     async function initPortfolio() {
       try {
         const res = await fetch('/api/data');
