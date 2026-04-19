@@ -1062,12 +1062,12 @@
         ],
       },
       achievements: [
-        { emoji: '🏆', title: '2nd Place – VCE Hackathon 2024', desc: 'Smart Waste Management with IoT & ML', color: '#ffbe0b' },
-        { emoji: '🎓', title: 'Google Cloud Essentials', desc: 'Completed Google Cloud Skills Boost program', color: '#00e5ff' },
-        { emoji: '🥇', title: 'NPTEL – Python for DS', desc: 'Elite + Silver badge · IIT Madras', color: '#00ff88' },
-        { emoji: '🌐', title: 'Meta Front-End Developer', desc: 'Coursera Professional Certificate', color: '#ff006e' },
-        { emoji: '🤖', title: 'AI Workshop Speaker', desc: 'Conducted ML workshop at VCE AI Club', color: '#00ff88' },
-        { emoji: '⭐', title: 'GitHub Arctic Code Vault', desc: 'Open-source project preserved in Arctic Code Vault', color: '#00e5ff' },
+        { emoji: '🏆', title: '2nd Place – VCE Hackathon 2024', desc: 'Smart Waste Management with IoT & ML', color: '#ffbe0b', photoUrl: '' },
+        { emoji: '🎓', title: 'Google Cloud Essentials', desc: 'Completed Google Cloud Skills Boost program', color: '#00e5ff', photoUrl: '' },
+        { emoji: '🥇', title: 'NPTEL – Python for DS', desc: 'Elite + Silver badge · IIT Madras', color: '#00ff88', photoUrl: '' },
+        { emoji: '🌐', title: 'Meta Front-End Developer', desc: 'Coursera Professional Certificate', color: '#ff006e', photoUrl: '' },
+        { emoji: '🤖', title: 'AI Workshop Speaker', desc: 'Conducted ML workshop at VCE AI Club', color: '#00ff88', photoUrl: '' },
+        { emoji: '⭐', title: 'GitHub Arctic Code Vault', desc: 'Open-source project preserved in Arctic Code Vault', color: '#00e5ff', photoUrl: '' },
       ],
       contact: {
         email: 'atejas361@gmail.com', location: 'Mysuru, Karnataka, India',
@@ -1326,6 +1326,7 @@
       const list = document.getElementById('skills-journey-list');
       list.innerHTML = '';
       (data.skills.journey || []).forEach((j, i) => {
+        const photoVal = j.photoUrl || '';
         list.innerHTML += `
       <div class="list-item" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -1334,12 +1335,17 @@
           <button class="btn btn-danger" style="padding:6px 12px;height:42px;" onclick="removeJourneyRow(${i})">✕</button>
         </div>
         <textarea class="form-textarea" rows="2" placeholder="Description of what you learned..." onchange="data.skills.journey[${i}].desc=this.value;markUnsaved()">${j.desc}</textarea>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text2);white-space:nowrap;">📷 Photo URL</span>
+          <input class="form-input" style="flex:1;font-size:12px;" value="${photoVal}" placeholder="https://... (optional — shows a View Photo button if set)" onchange="data.skills.journey[${i}].photoUrl=this.value;markUnsaved()"/>
+          ${photoVal ? `<a href="${photoVal}" target="_blank" style="white-space:nowrap;font-size:11px;padding:5px 10px;border-radius:6px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.3);color:var(--accent2);text-decoration:none;">Preview ↗</a>` : ''}
+        </div>
       </div>`;
       });
     }
     function addJourneyRow() {
       if (!data.skills.journey) data.skills.journey = [];
-      data.skills.journey.push({ period: 'New Period', title: 'New Topic', desc: 'Description' });
+      data.skills.journey.push({ period: 'New Period', title: 'New Topic', desc: 'Description', photoUrl: '' });
       renderJourneyList(); markUnsaved();
     }
     function removeJourneyRow(i) {
@@ -1426,20 +1432,28 @@
       const list = document.getElementById('achievements-list');
       list.innerHTML = '';
       data.achievements.forEach((a, i) => {
+        const photoVal = a.photoUrl || '';
         list.innerHTML += `
-      <div class="list-item" style="display:grid;grid-template-columns:60px 1fr 1fr 80px auto;gap:10px;align-items:center;">
-        <input class="form-input" value="${a.emoji}" style="text-align:center;font-size:18px;" onchange="data.achievements[${i}].emoji=this.value;markUnsaved()"/>
-        <input class="form-input" value="${a.title}" placeholder="Title" onchange="data.achievements[${i}].title=this.value;markUnsaved()"/>
-        <input class="form-input" value="${a.desc}" placeholder="Description" onchange="data.achievements[${i}].desc=this.value;markUnsaved()"/>
-        <input class="form-input" value="${a.color}" style="font-size:12px;" onchange="data.achievements[${i}].color=this.value;markUnsaved()"/>
-        <button class="btn btn-danger" style="padding:6px 8px;" onclick="removeAch(${i})">✕</button>
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:60px 1fr 1fr 80px auto;gap:10px;align-items:center;margin-bottom:12px;">
+          <input class="form-input" value="${a.emoji}" style="text-align:center;font-size:18px;" onchange="data.achievements[${i}].emoji=this.value;markUnsaved()"/>
+          <input class="form-input" value="${a.title}" placeholder="Title" onchange="data.achievements[${i}].title=this.value;markUnsaved()"/>
+          <input class="form-input" value="${a.desc}" placeholder="Description" onchange="data.achievements[${i}].desc=this.value;markUnsaved()"/>
+          <input class="form-input" value="${a.color}" style="font-size:12px;" title="Accent color" onchange="data.achievements[${i}].color=this.value;markUnsaved()"/>
+          <button class="btn btn-danger" style="padding:6px 8px;" onclick="removeAch(${i})">✕</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text2);white-space:nowrap;">🖼 Certificate Photo URL</span>
+          <input class="form-input" style="flex:1;font-size:12px;" value="${photoVal}" placeholder="https://... (optional — shows View Certificate button on portfolio)" onchange="data.achievements[${i}].photoUrl=this.value;markUnsaved()"/>
+          ${photoVal ? `<a href="${photoVal}" target="_blank" style="white-space:nowrap;font-size:11px;padding:5px 10px;border-radius:6px;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.3);color:var(--accent2);text-decoration:none;">Preview ↗</a>` : ''}
+        </div>
       </div>`;
       });
       document.getElementById('stat-achievements').textContent = data.achievements.length;
     }
 
     function addAchievement() {
-      data.achievements.push({ emoji: '🌟', title: 'New Achievement', desc: 'Description', color: '#ffbe0b' });
+      data.achievements.push({ emoji: '🌟', title: 'New Achievement', desc: 'Description', color: '#ffbe0b', photoUrl: '' });
       renderAchievements(); markUnsaved();
     }
     function removeAch(i) {

@@ -1007,12 +1007,12 @@
         ],
       },
       achievements: [
-        { emoji: '🏆', title: '2nd Place – VCE Hackathon 2024', desc: 'Smart Waste Management with IoT & ML', color: '#ffbe0b' },
-        { emoji: '🎓', title: 'Google Cloud Essentials', desc: 'Completed Google Cloud Skills Boost program', color: '#00e5ff' },
-        { emoji: '🥇', title: 'NPTEL – Python for DS', desc: 'Elite + Silver badge · IIT Madras', color: '#00ff88' },
-        { emoji: '🌐', title: 'Meta Front-End Developer', desc: 'Coursera Professional Certificate', color: '#ff006e' },
-        { emoji: '🤖', title: 'AI Workshop Speaker', desc: 'Conducted ML workshop at VCE AI Club', color: '#00ff88' },
-        { emoji: '⭐', title: 'GitHub Arctic Code Vault', desc: 'Open-source project preserved in Arctic Code Vault', color: '#00e5ff' },
+        { emoji: '🏆', title: '2nd Place – VCE Hackathon 2024', desc: 'Smart Waste Management with IoT & ML', color: '#ffbe0b', photoUrl: '' },
+        { emoji: '🎓', title: 'Google Cloud Essentials', desc: 'Completed Google Cloud Skills Boost program', color: '#00e5ff', photoUrl: '' },
+        { emoji: '🥇', title: 'NPTEL – Python for DS', desc: 'Elite + Silver badge · IIT Madras', color: '#00ff88', photoUrl: '' },
+        { emoji: '🌐', title: 'Meta Front-End Developer', desc: 'Coursera Professional Certificate', color: '#ff006e', photoUrl: '' },
+        { emoji: '🤖', title: 'AI Workshop Speaker', desc: 'Conducted ML workshop at VCE AI Club', color: '#00ff88', photoUrl: '' },
+        { emoji: '⭐', title: 'GitHub Arctic Code Vault', desc: 'Open-source project preserved in Arctic Code Vault', color: '#00e5ff', photoUrl: '' },
       ],
       contact: {
         email: 'atejas361@gmail.com', location: 'Mysuru, Karnataka, India',
@@ -1132,11 +1132,15 @@
       // Render Journey
       const jContainer = document.getElementById('journey-render');
       (data.skills.journey || []).forEach((j, i) => {
+        const photoBtn = j.photoUrl
+          ? `<a href="${j.photoUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:'Space Mono',monospace;font-size:10px;padding:5px 12px;border-radius:6px;border:1px solid rgba(0,229,255,0.4);color:var(--neon2);background:rgba(0,229,255,0.05);text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,229,255,0.12)'" onmouseout="this.style.background='rgba(0,229,255,0.05)'">📷 View Photo &#8599;</a>`
+          : '';
         jContainer.innerHTML += `
     <div class="tline-item relative mb-8 reveal" style="animation-delay:${i * 0.08}s;">
       <div class="font-mono text-xs mb-1" style="color:var(--neon2);">${j.period}</div>
       <div class="font-display font-bold text-sm mb-1" style="color:var(--text);">${j.title}</div>
       <div class="font-mono text-xs" style="color:var(--text2);">${j.desc}</div>
+      ${photoBtn}
     </div>`;
       });
 
@@ -1178,12 +1182,16 @@
       // ── ACHIEVEMENTS ─────────────────────────────────────
       const achg = document.getElementById('ach-grid');
       data.achievements.forEach((a, i) => {
+        const certBtn = a.photoUrl
+          ? `<a href="${a.photoUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-family:'Space Mono',monospace;font-size:10px;padding:6px 14px;border-radius:6px;border:1px solid ${a.color}55;color:${a.color};background:${a.color}0d;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='${a.color}22'" onmouseout="this.style.background='${a.color}0d'">🎓 View Certificate &#8599;</a>`
+          : '';
         achg.innerHTML += `
     <div class="achcard p-6 reveal" style="animation-delay:${i * 0.08}s;">
       <div style="font-size:34px;margin-bottom:10px;">${a.emoji}</div>
       <h3 class="font-display font-bold text-sm mb-1" style="color:var(--text);">${a.title}</h3>
       <p class="font-mono text-xs" style="color:var(--text2);">${a.desc}</p>
       <div style="margin-top:10px;width:28px;height:2px;background:${a.color};border-radius:2px;"></div>
+      ${certBtn}
     </div>`;
       });
 
