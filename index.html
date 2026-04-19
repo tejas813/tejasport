@@ -647,8 +647,9 @@
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16">
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div>
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-6 md:gap-12 items-center">
+        <!-- LEFT: text content -->
+        <div class="col-span-1">
           <div class="section-tag mb-4 reveal">// Hello, World!</div>
           <h1 class="hero-name reveal" style="animation-delay:0.1s;">
             <span id="h-firstname"></span><br>
@@ -657,13 +658,13 @@
           <div class="hero-sub mt-6 mb-2 reveal" style="animation-delay:0.2s;">
             &gt; <span id="typing-el" class="typing-cur"></span>
           </div>
-          <p id="h-desc" class="mt-4 mb-8 text-sm leading-relaxed reveal"
+          <p id="h-desc" class="mt-4 mb-8 text-sm leading-relaxed reveal hidden md:block"
             style="color:var(--text2);max-width:480px;animation-delay:0.3s;"></p>
-          <div class="flex flex-wrap gap-4 reveal" style="animation-delay:0.4s;">
+          <div class="flex flex-wrap gap-4 reveal hidden md:flex" style="animation-delay:0.4s;">
             <a class="btn-solid" href="#projects">View Projects →</a>
             <a id="resume-btn" class="btn-outline" href="#" target="_blank">↓ Download Resume</a>
           </div>
-          <div class="flex items-center gap-6 mt-10 reveal" style="animation-delay:0.5s;">
+          <div class="flex items-center gap-6 mt-10 reveal hidden md:flex" style="animation-delay:0.5s;">
             <a id="s-github" href="#" target="_blank" aria-label="GitHub"
               style="color:var(--text2);transition:color 0.2s;" onmouseover="this.style.color='var(--neon)'"
               onmouseout="this.style.color='var(--text2)'">
@@ -690,30 +691,56 @@
             <div style="height:1px;width:36px;background:var(--border);"></div>
             <span id="h-status" class="font-mono text-xs" style="color:var(--text2);"></span>
           </div>
+          <!-- Mobile: desc + buttons below photo (shown after right column) -->
+          <p id="h-desc-mobile" class="mt-3 text-xs leading-relaxed reveal md:hidden"
+            style="color:var(--text2);animation-delay:0.3s;"></p>
+          <div class="flex flex-col gap-2 mt-4 reveal md:hidden" style="animation-delay:0.4s;">
+            <a class="btn-solid" href="#projects" style="text-align:center;font-size:11px;padding:9px 14px;">View Projects →</a>
+            <a id="resume-btn-mobile" class="btn-outline" href="#" target="_blank" style="text-align:center;font-size:11px;padding:9px 14px;">↓ Resume</a>
+          </div>
         </div>
 
-        <!-- Code card -->
-        <div class="hidden md:block reveal" style="animation-delay:0.3s;">
-          <div class="relative"
-            style="background:var(--card);border:1px solid rgba(0,255,136,0.2);border-radius:16px;padding:28px;overflow:hidden;font-family:'Space Mono',monospace;font-size:13px;line-height:1.9;">
-            <div class="scanline"></div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-              <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
-              <div style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;"></div>
-              <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
-              <span id="code-filename" style="color:var(--text2);font-size:11px;margin-left:8px;"></span>
+        <!-- RIGHT: Profile photo (mobile) / Code card (desktop) -->
+        <div class="col-span-1 flex justify-center items-center reveal" style="animation-delay:0.3s;">
+          <!-- Profile photo — shown on mobile -->
+          <div class="block md:hidden" style="text-align:center;">
+            <div class="relative" style="display:inline-block;">
+              <div id="hero-photo-wrap"
+                style="width:150px;height:150px;border-radius:50%;border:2px solid rgba(0,255,136,0.45);background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,229,255,0.06));overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(0,255,136,0.12);">
+                <img id="hero-photo-img" src="" alt="Profile" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:50%;" />
+                <span id="hero-photo-emoji" style="font-size:64px;">👨‍💻</span>
+              </div>
+              <!-- orbiting dot -->
+              <div style="position:absolute;inset:-12px;border-radius:50%;border:1px dashed rgba(0,255,136,0.25);animation:orbit 14s linear infinite;pointer-events:none;">
+                <div style="position:absolute;top:0;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:var(--neon2);border-radius:50%;box-shadow:0 0 6px var(--neon2);"></div>
+              </div>
+              <!-- online badge -->
+              <div style="position:absolute;bottom:6px;right:6px;background:var(--card);border:1px solid rgba(0,255,136,0.4);border-radius:8px;padding:4px 8px;font-family:'Space Mono',monospace;font-size:9px;color:var(--neon);">● Online</div>
             </div>
-            <div><span style="color:#00e5ff;">const</span> <span style="color:var(--neon);">developer</span> <span
-                style="color:#e8f4f8;">=</span> <span style="color:#e8f4f8;">{</span></div>
-            <div style="padding-left:20px;"><span style="color:#ffbe0b;">name</span><span>:</span> <span
-                style="color:#ff006e;" id="code-name"></span><span>,</span></div>
-            <div style="padding-left:20px;"><span style="color:#ffbe0b;">college</span><span>:</span> <span
-                style="color:#ff006e;" id="code-college"></span><span>,</span></div>
-            <div style="padding-left:20px;"><span style="color:#ffbe0b;">year</span><span>:</span> <span
-                style="color:#00e5ff;" id="code-year"></span><span>,</span></div>
-            <div style="padding-left:20px;"><span style="color:#ffbe0b;">available</span><span>:</span> <span
-                style="color:#00e5ff;">true</span></div>
-            <div><span>};</span></div>
+          </div>
+          <!-- Code card — shown on desktop only -->
+          <div class="hidden md:block w-full">
+            <div class="relative"
+              style="background:var(--card);border:1px solid rgba(0,255,136,0.2);border-radius:16px;padding:28px;overflow:hidden;font-family:'Space Mono',monospace;font-size:13px;line-height:1.9;">
+              <div class="scanline"></div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+                <span id="code-filename" style="color:var(--text2);font-size:11px;margin-left:8px;"></span>
+              </div>
+              <div><span style="color:#00e5ff;">const</span> <span style="color:var(--neon);">developer</span> <span
+                  style="color:#e8f4f8;">=</span> <span style="color:#e8f4f8;">{</span></div>
+              <div style="padding-left:20px;"><span style="color:#ffbe0b;">name</span><span>:</span> <span
+                  style="color:#ff006e;" id="code-name"></span><span>,</span></div>
+              <div style="padding-left:20px;"><span style="color:#ffbe0b;">college</span><span>:</span> <span
+                  style="color:#ff006e;" id="code-college"></span><span>,</span></div>
+              <div style="padding-left:20px;"><span style="color:#ffbe0b;">year</span><span>:</span> <span
+                  style="color:#00e5ff;" id="code-year"></span><span>,</span></div>
+              <div style="padding-left:20px;"><span style="color:#ffbe0b;">available</span><span>:</span> <span
+                  style="color:#00e5ff;">true</span></div>
+              <div><span>};</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -950,6 +977,7 @@
         year: '2nd Year B.E.',
         resumeUrl: 'https://drive.google.com/file/d/1BkkL_AAaDwKtetxKWfZEdj5oBRyLx7F_/view?usp=drive_link',
         typing: 'Web Developer\nAI Enthusiast\nIoT Explorer\nProblem Solver\nOpen Source Fan',
+        photoUrl: '',
       },
       social: {
         github: 'https://github.com/tejas-813',  // Sample, user used github.com/tejas813
@@ -1066,14 +1094,26 @@
       document.getElementById('h-firstname').textContent = data.hero.firstname;
       document.getElementById('h-lastname').textContent = data.hero.lastname;
       document.getElementById('h-desc').textContent = data.hero.desc;
+      // Mobile desc duplicate
+      const mDesc = document.getElementById('h-desc-mobile');
+      if (mDesc) mDesc.textContent = data.hero.desc;
       document.getElementById('h-status').textContent = 'Open to opportunities';
       document.getElementById('resume-btn').href = data.hero.resumeUrl || '#';
+      const resumeBtnMobile = document.getElementById('resume-btn-mobile');
+      if (resumeBtnMobile) resumeBtnMobile.href = data.hero.resumeUrl || '#';
       document.getElementById('nav-logo').textContent = data.hero.firstname[0] + data.hero.lastname.replace(/\s/g, '')[0] + 'S.dev';
       document.getElementById('loader-name').textContent = `${data.hero.firstname} ${data.hero.lastname}`;
       document.getElementById('code-filename').textContent = data.hero.firstname.toLowerCase() + '.js';
       document.getElementById('code-name').textContent = `"${data.hero.firstname} ${data.hero.lastname}"`;
       document.getElementById('code-college').textContent = `"${data.hero.college}"`;
       document.getElementById('code-year').textContent = data.hero.year;
+      // ── HERO PROFILE PHOTO ────────────────────────────────
+      if (data.hero.photoUrl) {
+        const img = document.getElementById('hero-photo-img');
+        const emoji = document.getElementById('hero-photo-emoji');
+        if (img) { img.src = data.hero.photoUrl; img.style.display = 'block'; }
+        if (emoji) emoji.style.display = 'none';
+      }
 
       // Social
       document.getElementById('s-github').href = data.social.github;

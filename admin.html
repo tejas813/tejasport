@@ -712,6 +712,30 @@
         </div>
 
         <div class="card">
+          <div class="card-title">🖼️ Profile Photo
+            <span style="font-size:11px;font-weight:400;color:var(--text2);margin-left:8px;">(shown on mobile hero)</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Photo URL — paste any direct image link (Google Drive, Imgur, Cloudinary, etc.)</label>
+            <input class="form-input" id="hero-photo-url" placeholder="https://i.imgur.com/yourphoto.jpg" oninput="markUnsaved();updatePhotoPreview()" />
+          </div>
+          <div id="photo-preview-wrap" style="display:none;margin-top:12px;display:flex;align-items:center;gap:14px;">
+            <img id="admin-photo-preview" src="" alt="Preview"
+              style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(79,142,247,0.4);display:none;" />
+            <div style="font-size:12px;color:var(--text2);">
+              <div style="color:var(--green);font-weight:600;margin-bottom:4px;">✓ Photo URL set</div>
+              <div>This photo will appear in the circular frame on mobile</div>
+              <a id="photo-open-link" href="#" target="_blank" style="color:var(--accent2);font-size:11px;">Open in new tab ↗</a>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:rgba(79,142,247,0.06);border-radius:8px;border:1px solid rgba(79,142,247,0.15);font-size:12px;color:var(--text2);">
+            <strong style="color:var(--accent);">Tip:</strong> Use a direct image URL.
+            <a href="https://imgur.com/upload" target="_blank" style="color:var(--accent2);">Upload to Imgur ↗</a> or
+            <a href="https://cloudinary.com" target="_blank" style="color:var(--accent2);">Cloudinary ↗</a> for a permanent link.
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-title">⌨️ Typing Animation Texts</div>
           <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">These rotate in the hero typing animation
             (one per line)</div>
@@ -1005,6 +1029,7 @@
         year: '2nd Year B.E.',
         resumeUrl: '#',
         typing: 'Web Developer\nAI Enthusiast\nIoT Explorer\nProblem Solver\nOpen Source Fan',
+        photoUrl: '',
       },
       social: {
         github: 'https://github.com/tejas813',
@@ -1207,6 +1232,8 @@
       document.getElementById('hero-year').value = d.hero.year;
       document.getElementById('hero-resume-url').value = d.hero.resumeUrl;
       document.getElementById('hero-typing').value = d.hero.typing;
+      document.getElementById('hero-photo-url').value = d.hero.photoUrl || '';
+      updatePhotoPreview();
       // Social
       document.getElementById('social-github').value = d.social.github;
       document.getElementById('social-linkedin').value = d.social.linkedin;
@@ -1261,6 +1288,7 @@
       data.hero.year = v('hero-year');
       data.hero.resumeUrl = v('hero-resume-url');
       data.hero.typing = v('hero-typing');
+      data.hero.photoUrl = v('hero-photo-url');
       data.social.github = v('social-github');
       data.social.linkedin = v('social-linkedin');
       data.social.email = v('social-email');
@@ -1517,6 +1545,23 @@
     function showToast(msg) {
       const t = document.getElementById('toast'); t.textContent = msg;
       t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── PHOTO PREVIEW ─────────────────────────────────────
+    function updatePhotoPreview() {
+      const url = document.getElementById('hero-photo-url').value.trim();
+      const wrap = document.getElementById('photo-preview-wrap');
+      const img = document.getElementById('admin-photo-preview');
+      const link = document.getElementById('photo-open-link');
+      if (url) {
+        wrap.style.display = 'flex';
+        img.src = url;
+        img.style.display = 'block';
+        if (link) { link.href = url; }
+      } else {
+        wrap.style.display = 'none';
+        img.style.display = 'none';
+      }
     }
 
     // ── DATA PERSISTS TO BACKEND ON SAVE AND PUBLISH ──────
